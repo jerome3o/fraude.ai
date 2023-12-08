@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+
+  reverse-proxy:
+    build:
+      context: ./ingress/
+      dockerfile: Dockerfile
+    ports:
+     - '3001:80'
+    depends_on:
+     - frontend
+     - backend
+
+  frontend:
+    build:
+      context: ./frontend/
+      dockerfile: Dockerfile
+
+  backend:
+    build:
+      context: ./backend/
+      dockerfile: Dockerfile
