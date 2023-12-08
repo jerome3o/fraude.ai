@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import List
 from enum import Enum
 
@@ -10,22 +12,33 @@ class ParticipantType(Enum):
 
 
 class Message(BaseModel):
-    _id: str
-    user_id: str
+    type: ParticipantType
+    content: str
+
+
+class CreateMessage(Message):
+    parent_message_id: str
     conversation_id: str
 
-    participant_type: ParticipantType
 
-    content: str
-    parent: str
-
-    created_at: str
-    updated_at: str
+class StoredMessage(Message):
+    id: str
+    responses: List[StoredMessage]
 
 
 class Conversation(BaseModel):
-    _id: str
     user_id: str
+    title: str
+
+
+class CreateConversation(Conversation):
+    pass
+
+
+class StoredConversation(Conversation):
+    _id: str
+
     created_at: str
     updated_at: str
-    messages: List[Message]
+
+    messages: List[StoredMessage]

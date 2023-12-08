@@ -21,3 +21,8 @@ services:
     build:
       context: ./backend/
       dockerfile: Dockerfile
+
+  mongo:
+    image: mongo
+    ports:
+      - "27017:27017"
