@@ -16,12 +16,14 @@ Some assumptions/simplifications:
 
 * Single user
 * Multiple conversations with persistence
-* Edit messages
+* Streaming responses
 
 ### Prototype 2
 
 * Multiple users
 * Simple "functions" / integrations.
+* Markdown
+* Edit messages
 
 ### Prototype 3
 

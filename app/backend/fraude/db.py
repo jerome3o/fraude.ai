@@ -1,6 +1,12 @@
 from pymongo import MongoClient
 
-from fraude.models import Message, Conversation
+from fraude.models import (
+    CreateConversation,
+    CreateMessage,
+    StoredConversation,
+    StoredMessage,
+)
+from fraude.helpers import generate_id
 
 
 # There is only the conversations collection in the database
@@ -22,12 +28,37 @@ class DbClient:
             for conversation in self.db.conversations.find({"user_id": user_id})
         ]
 
-    def get_conversation(self, conversation_id: str) -> Conversation:
+    def get_conversation(self, conversation_id: str) -> StoredConversation:
         # returns a conversation for a given id
         conversation = self.db.conversations.find_one({"_id": conversation_id})
-        return Conversation(**conversation)
+        return StoredConversation(**conversation)
 
-    def add_message(self, conversation_id: str, parent_message: str) -> Message:
-        # adds a message to a conversation
-        # returns the message
-        pass
+    def add_conversation(self, conversation: CreateConversation) -> StoredConversation:
+        # creates a conversation
+        return StoredConversation(
+            title=conversation.title,
+            user_id=conversation.user_id,
+        )
+
+    def add_message(self, message: CreateMessage) -> StoredMessage:
+        # gets the conversation
+        conversation = self.get_conversation(message.conversation_id)
+
+        # creates the message
+        new_message = StoredMessage(
+            id=generate_id(),
+            type=message.type,
+            content=message.content,
+            responses=[],
+        )
+
+        # find parent message
+        parent_message = conversation.find_message(message.parent_message_id)
+        parent_message.responses.append(new_message)
+
+        # update conversation
+        self.db.conversations.update_one(
+            {"_id": conversation._id}, {"$set": conversation.model_dump()}
+        )
+
+        return new_message
