@@ -18,6 +18,9 @@ def _find_message(messages: List[StoredMessage], message_id: str) -> StoredMessa
     return None
 
 
+ConversationHeaders = list[tuple[str, str]]
+
+
 class ParticipantType(Enum):
     HUMAN = "human"
     AI = "ai"

@@ -1,6 +1,7 @@
 from pymongo import MongoClient
 
 from fraude.models import (
+    ConversationHeaders,
     CreateConversation,
     CreateMessage,
     StoredConversation,
@@ -21,7 +22,7 @@ class DbClient:
         self.client = MongoClient(url)
         self.db = self.client[db_name]
 
-    def get_conversation_headers(self, user_id: str) -> list[tuple[str, str]]:
+    def get_conversation_headers(self, user_id: str) -> ConversationHeaders:
         # returns all conversation titles and ids for a given user
         return [
             (conversation["_id"], conversation["title"])
