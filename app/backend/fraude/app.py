@@ -2,7 +2,13 @@ from fastapi import FastAPI
 
 from fraude.db import DbClient
 from fraude.constants import DB_URL, DB_NAME
-from fraude.models import ConversationHeaders, CreateConversation, StoredConversation
+from fraude.models import (
+    ConversationHeaders,
+    CreateConversation,
+    CreateMessage,
+    StoredConversation,
+    StoredMessage,
+)
 
 
 app = FastAPI()
@@ -22,7 +28,7 @@ async def get_conversations(user: str) -> ConversationHeaders:
 
 
 @app.post("/api/conversations/user/{user}")
-async def get_conversations(
+async def add_conversation(
     conversation: CreateConversation,
     user: str,
 ) -> StoredConversation:
@@ -30,10 +36,18 @@ async def get_conversations(
 
 
 @app.get("/api/conversations/id/{convo}")
-async def get_conversations(
+async def get_conversation(
     convo: str,
 ) -> StoredConversation:
     return db_client.get_conversation(convo)
+
+
+@app.post("/api/conversations/id/{convo}/message")
+async def add_message(
+    convo: str,
+    message: CreateMessage,
+) -> StoredMessage:
+    return db_client.add_message(message, convo)
 
 
 if __name__ == "__main__":

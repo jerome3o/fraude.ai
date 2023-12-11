@@ -58,25 +58,39 @@ class DbClient:
 
         return convo
 
-    def add_message(self, message: CreateMessage) -> StoredMessage:
+    def add_message(
+        self,
+        message: CreateMessage,
+        convo: str,
+    ) -> StoredMessage:
         # gets the conversation
-        conversation = self.get_conversation(message.conversation_id)
+        conversation = self.get_conversation(convo)
 
         # creates the message
         new_message = StoredMessage(
+            conversation_id=convo,
             id=generate_id(),
             type=message.type,
             content=message.content,
             responses=[],
         )
 
-        # find parent message
-        parent_message = conversation.find_message(message.parent_message_id)
-        parent_message.responses.append(new_message)
+        if message.parent_message_id is None:
+            # add to conversation
+            conversation.messages.append(new_message)
+        else:
+            # find parent message
+            parent_message = conversation.find_message(message.parent_message_id)
+
+            if parent_message is None:
+                raise ValueError("parent message not found")
+
+            parent_message.responses.append(new_message)
 
         # update conversation
         self.db.conversations.update_one(
-            {"_id": conversation.id}, {"$set": conversation.model_dump()}
+            {"_id": ObjectId(conversation.id)},
+            {"$set": conversation.model_dump()},
         )
 
         return new_message

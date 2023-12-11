@@ -31,16 +31,20 @@ class Message(BaseModel):
     type: ParticipantType
     content: str
 
+    class Config:
+        use_enum_values = True
+
 
 class CreateMessage(Message):
-    parent_message_id: str
-    conversation_id: str
+    parent_message_id: Optional[str] = None
 
 
 class StoredMessage(Message):
     # this will be created by db client
     id: str
     responses: List[StoredMessage]
+
+    conversation_id: str
 
 
 class Conversation(BaseModel):
