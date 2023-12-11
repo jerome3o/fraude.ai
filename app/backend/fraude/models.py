@@ -2,8 +2,9 @@ from __future__ import annotations
 
 from typing import List, Optional
 from enum import Enum
+from bson import ObjectId
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, validator
 
 
 def _find_message(messages: List[StoredMessage], message_id: str) -> StoredMessage:
@@ -52,7 +53,7 @@ class CreateConversation(Conversation):
 
 class StoredConversation(Conversation):
     # database will provide this
-    id: Optional[str] = None
+    id: Optional[str] = Field(default=None, alias="_id")
     user_id: str
 
     created_at: str
@@ -62,3 +63,28 @@ class StoredConversation(Conversation):
 
     def find_message(self, message_id: str) -> Optional[StoredMessage]:
         return _find_message(self.messages, message_id)
+
+    @validator("id", pre=True)
+    def validate_id(cls, v):
+        if isinstance(v, ObjectId):
+            return str(v)
+        return v
+
+
+def main():
+    data = {
+        "_id": ObjectId("6576834f5c8fc6ee876f2896"),
+        "title": "oops",
+        "user_id": "user_id",
+        "created_at": "created_at",
+        "updated_at": "updated_at",
+        "messages": [],
+    }
+    print(StoredConversation(**data))
+
+
+if __name__ == "__main__":
+    import logging
+
+    logging.basicConfig(level=logging.INFO)
+    main()

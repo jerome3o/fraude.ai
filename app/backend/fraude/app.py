@@ -29,6 +29,13 @@ async def get_conversations(
     return db_client.add_conversation(conversation, user)
 
 
+@app.get("/api/conversations/id/{convo}")
+async def get_conversations(
+    convo: str,
+) -> StoredConversation:
+    return db_client.get_conversation(convo)
+
+
 if __name__ == "__main__":
     import logging
     import uvicorn

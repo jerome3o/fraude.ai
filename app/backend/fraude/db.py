@@ -1,6 +1,7 @@
 import datetime
 
 from pymongo import MongoClient
+from bson.objectid import ObjectId
 
 from fraude.models import (
     ConversationHeaders,
@@ -33,7 +34,9 @@ class DbClient:
 
     def get_conversation(self, conversation_id: str) -> StoredConversation:
         # returns a conversation for a given id
-        conversation = self.db.conversations.find_one({"_id": conversation_id})
+        conversation = self.db.conversations.find_one(
+            {"_id": ObjectId(conversation_id)}
+        )
         return StoredConversation(**conversation)
 
     def add_conversation(
