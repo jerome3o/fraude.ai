@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import List, Optional
 from enum import Enum
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 def _find_message(messages: List[StoredMessage], message_id: str) -> StoredMessage:
@@ -43,7 +43,6 @@ class StoredMessage(Message):
 
 
 class Conversation(BaseModel):
-    user_id: str
     title: str
 
 
@@ -53,12 +52,13 @@ class CreateConversation(Conversation):
 
 class StoredConversation(Conversation):
     # database will provide this
-    _id: Optional[str] = None
+    id: Optional[str] = None
+    user_id: str
 
     created_at: str
     updated_at: str
 
-    messages: List[StoredMessage]
+    messages: List[StoredMessage] = Field(default_factory=list)
 
     def find_message(self, message_id: str) -> Optional[StoredMessage]:
         return _find_message(self.messages, message_id)

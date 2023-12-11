@@ -1,3 +1,5 @@
+import datetime
+
 from pymongo import MongoClient
 
 from fraude.models import (
@@ -25,7 +27,7 @@ class DbClient:
     def get_conversation_headers(self, user_id: str) -> ConversationHeaders:
         # returns all conversation titles and ids for a given user
         return [
-            (conversation["_id"], conversation["title"])
+            (str(conversation["_id"]), conversation["title"])
             for conversation in self.db.conversations.find({"user_id": user_id})
         ]
 
@@ -34,12 +36,24 @@ class DbClient:
         conversation = self.db.conversations.find_one({"_id": conversation_id})
         return StoredConversation(**conversation)
 
-    def add_conversation(self, conversation: CreateConversation) -> StoredConversation:
+    def add_conversation(
+        self, conversation: CreateConversation, user: str
+    ) -> StoredConversation:
         # creates a conversation
-        return StoredConversation(
+        time_string = datetime.datetime.now().isoformat()
+        convo = StoredConversation(
             title=conversation.title,
-            user_id=conversation.user_id,
+            user_id=user,
+            created_at=time_string,
+            updated_at=time_string,
         )
+
+        # adds the conversation to the database
+        value = self.db.conversations.insert_one(convo.model_dump())
+
+        convo.id = str(value.inserted_id)
+
+        return convo
 
     def add_message(self, message: CreateMessage) -> StoredMessage:
         # gets the conversation
@@ -59,7 +73,7 @@ class DbClient:
 
         # update conversation
         self.db.conversations.update_one(
-            {"_id": conversation._id}, {"$set": conversation.model_dump()}
+            {"_id": conversation.id}, {"$set": conversation.model_dump()}
         )
 
         return new_message

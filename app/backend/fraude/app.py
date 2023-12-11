@@ -2,7 +2,7 @@ from fastapi import FastAPI
 
 from fraude.db import DbClient
 from fraude.constants import DB_URL, DB_NAME
-from fraude.models import ConversationHeaders
+from fraude.models import ConversationHeaders, CreateConversation, StoredConversation
 
 
 app = FastAPI()
@@ -16,10 +16,17 @@ async def root():
     return {"message": "Hello World"}
 
 
-@app.get("/api/conversations")
-async def get_conversations() -> ConversationHeaders:
-    user_id = "FAKE_USER"
-    return db_client.get_conversation_headers(user_id)
+@app.get("/api/conversations/user/{user}")
+async def get_conversations(user: str) -> ConversationHeaders:
+    return db_client.get_conversation_headers(user)
+
+
+@app.post("/api/conversations/user/{user}")
+async def get_conversations(
+    conversation: CreateConversation,
+    user: str,
+) -> StoredConversation:
+    return db_client.add_conversation(conversation, user)
 
 
 if __name__ == "__main__":
@@ -29,7 +36,8 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
 
     uvicorn.run(
-        app,
+        "fraude.app:app",
         host="127.0.0.1",
         port=8000,
+        reload=True,
     )
