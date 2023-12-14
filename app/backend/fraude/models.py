@@ -7,13 +7,16 @@ from bson import ObjectId
 from pydantic import BaseModel, Field, validator
 
 
-def _find_message(messages: List[StoredMessage], message_id: str) -> StoredMessage:
+def _find_message_chain(
+    messages: List[StoredMessage], message_id: str
+) -> List[StoredMessage]:
     for message in messages[::-1]:
         if message.id == message_id:
-            return message
+            return [message]
         elif message.responses:
-            found_message = _find_message(message.responses, message_id)
+            found_message = _find_message_chain(message.responses, message_id)
             if found_message:
+                found_message.insert(0, message)
                 return found_message
 
     return None
@@ -66,7 +69,14 @@ class StoredConversation(Conversation):
     messages: List[StoredMessage] = Field(default_factory=list)
 
     def find_message(self, message_id: str) -> Optional[StoredMessage]:
-        return _find_message(self.messages, message_id)
+        chain = _find_message_chain(self.messages, message_id)
+        if chain:
+            return chain[-1]
+
+        return None
+
+    def get_message_thread(self, message_id: str) -> List[StoredMessage]:
+        return _find_message_chain(self.messages, message_id)
 
     @validator("id", pre=True)
     def validate_id(cls, v):
