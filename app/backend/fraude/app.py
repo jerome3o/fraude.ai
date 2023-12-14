@@ -51,7 +51,9 @@ async def get_conversation(
 async def add_message(
     convo_id: str,
     message: CreateMessage,
-) -> List[StoredMessage]:
+) -> StoredMessage:
+    # TODO: reduce unnecessary db calls
+
     human_message = db_client.add_message(message, convo_id)
     conversation = db_client.get_conversation(convo_id)
     message_thread = conversation.get_message_thread(human_message.id)
@@ -61,12 +63,13 @@ async def add_message(
     ai_message = db_client.add_message(
         CreateMessage(
             type=ParticipantType.AI,
-            content=response.completion,
+            content=response,
             parent_message_id=human_message.id,
         ),
         convo_id,
     )
-    return [human_message, ai_message]
+
+    return db_client.get_conversation(convo_id).get_message_thread(ai_message.id)
 
 
 if __name__ == "__main__":

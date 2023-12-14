@@ -76,6 +76,7 @@ class StoredConversation(Conversation):
         return None
 
     def get_message_thread(self, message_id: str) -> List[StoredMessage]:
+        # TODO: this returns a list of nested messages, we should dedupe this
         return _find_message_chain(self.messages, message_id)
 
     @validator("id", pre=True)

@@ -22,4 +22,4 @@ class AnthropicClient(AiClient):
             model="claude-2",
             max_tokens_to_sample=300,
             prompt=prompt,
-        )
+        ).completion
