@@ -1,0 +1,66 @@
+{
+    "client": "Thunder Client",
+    "collectionName": "fraude",
+    "dateExported": "2023-12-14T21:09:58.670Z",
+    "version": "1.1",
+    "folders": [],
+    "requests": [
+        {
+            "_id": "076a8ae5-7946-40c8-862c-1c0b60771d67",
+            "colId": "0032a38d-3ee9-4056-94db-3145bc572ebd",
+            "containerId": "",
+            "name": "add conversation",
+            "url": "http://localhost:8000/api/conversations/user/jerome",
+            "method": "POST",
+            "sortNum": 20000,
+            "created": "2023-12-14T20:57:37.371Z",
+            "modified": "2023-12-14T21:01:58.214Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"title\": \"test convo\"\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "deada1f8-0260-48cb-bc7d-a3bafb14cacc",
+            "colId": "0032a38d-3ee9-4056-94db-3145bc572ebd",
+            "containerId": "",
+            "name": "add first message",
+            "url": "http://localhost:8000/api/conversations/id/657b6d470b45b0522b15e0bb/message",
+            "method": "POST",
+            "sortNum": 30000,
+            "created": "2023-12-14T21:02:09.092Z",
+            "modified": "2023-12-14T21:03:34.872Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"parent_message_id\": null,\n  \"type\": \"human\",\n  \"content\": \"hey there\"\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "87df8739-5c43-441a-975f-3f23d30c9aba",
+            "colId": "0032a38d-3ee9-4056-94db-3145bc572ebd",
+            "containerId": "",
+            "name": "add second message",
+            "url": "http://localhost:8000/api/conversations/id/657b6d470b45b0522b15e0bb/message",
+            "method": "POST",
+            "sortNum": 40000,
+            "created": "2023-12-14T21:04:57.698Z",
+            "modified": "2023-12-14T21:05:24.262Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"parent_message_id\": \"c558682af532faa76f842b48bd7755da\",\n  \"type\": \"human\",\n  \"content\": \"What's your favourite colour?\"\n}",
+                "form": []
+            },
+            "tests": []
+        }
+    ]
+}
