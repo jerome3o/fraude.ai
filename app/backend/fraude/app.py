@@ -50,7 +50,7 @@ async def get_conversation(
 async def add_message(
     convo_id: str,
     message: CreateMessage,
-) -> StoredMessage:
+) -> list[StoredMessage]:
     # TODO: reduce unnecessary db calls
 
     human_message = db_client.add_message(message, convo_id)
