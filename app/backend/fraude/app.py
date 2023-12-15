@@ -9,7 +9,6 @@ from fraude.models import (
     CreateMessage,
     ParticipantType,
     StoredConversation,
-    StoredMessage,
 )
 from fraude.prompting import build_conversation_prompt
 
