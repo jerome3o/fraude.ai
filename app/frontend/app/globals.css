@@ -91,9 +91,6 @@ main {
   align-items: center;
   justify-content: flex-end;
   padding: 0 10px;
-  border-color: black;
-  border-width: 2px;
-  border-radius: var(--border-radius-1);
 
   height: 100%;
   width: 100%;

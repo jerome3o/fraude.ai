@@ -6,7 +6,7 @@ import ConversationList from "./ConversationsList";
 
 import { useState, useEffect } from "react";
 
-import { ApiService, ConversationHeaders } from "../fraude/apiService";
+import { ApiService, ConversationHeaders, getThread } from "../fraude/apiService";
 
 const ChatApp = () => {
     const user = "jerome";
@@ -15,6 +15,7 @@ const ChatApp = () => {
     let [conversations, setConversations] = useState<ConversationHeaders>([]);
     let [conversationId, setConversationId] = useState<string | undefined>(undefined);
     let [conversationTitle, setConversationTitle] = useState<string | undefined>(undefined);
+    let [messages, setMessages] = useState<string[]>(["hey", "hi", "hello"]);
 
     useEffect(() => {
         fraude.getConversationHeaders().then((res) => {
@@ -22,9 +23,14 @@ const ChatApp = () => {
         });
     }, []);
 
-    const onSelect = (id: string, title: string) => {
+    async function onSelect(id: string, title: string) {
         setConversationId(id);
         setConversationTitle(title);
+        const conversation = await fraude.getConversation(id);
+        const messages = getThread(conversation.messages);
+
+        console.log(conversation);
+        setMessages(messages.map((message) => { return message.content }));
     }
 
     return (
@@ -35,6 +41,7 @@ const ChatApp = () => {
                 <ActiveConversation
                     conversationTitle={conversationTitle}
                     conversationId={conversationId}
+                    messages={messages}
                 />
             </div>
         </div>

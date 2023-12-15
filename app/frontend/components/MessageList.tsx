@@ -1,13 +1,14 @@
-import '../app/globals.css'
-import Message from "./Message"
+import "../app/globals.css";
+import Message from "./Message";
 
-const MessageList = () => {
+const MessageList = ({ messages }: { messages: string[] }) => {
     return (
         <div className="message-list debug">
-            <Message content="AI message" isAi={true} />
-            <Message content="Human message" isAi={false} />
+            {messages.map((message, index) => {
+                return <Message key={index} content={message} isAi={index % 2 === 1} />;
+            })}
         </div>
-    )
-}
+    );
+};
 
-export default MessageList
+export default MessageList;
