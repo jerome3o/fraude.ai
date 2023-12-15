@@ -7,16 +7,17 @@ const MessageInput = (
 ) => {
     const [message, setMessage] = useState('')
 
-    async function handleSend() {
-        await sendMessage(message)
+    async function handleSend(e: React.FormEvent<HTMLFormElement>) {
+        e.preventDefault();
         setMessage('')
+        await sendMessage(message)
     }
 
     return (
-        <div className='message-input' >
+        <form onSubmit={handleSend} className='message-input'>
             <input type="text" value={message} onChange={(e) => setMessage(e.target.value)} />
-            <button onClick={handleSend}>Send</button>
-        </div >
+            <button type="submit">Send</button>
+        </form>
     )
 }
 
