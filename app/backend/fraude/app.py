@@ -1,4 +1,3 @@
-from typing import List
 from fastapi import FastAPI
 
 from fraude.ai import AnthropicClient, AiClient
