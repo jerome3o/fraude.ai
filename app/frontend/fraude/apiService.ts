@@ -14,7 +14,7 @@ interface StoredMessage {
 }
 
 interface StoredConversation {
-  _id: string | undefined;
+  _id: string;
   title: string;
   user_id: string;
   created_at: string;
@@ -22,6 +22,11 @@ interface StoredConversation {
   messages: StoredMessage[];
 }
 
+interface CreateMessage {
+  type: string;
+  content: string;
+  parent_message_id: string | undefined;
+}
 
 function getThread(messages: StoredMessage[]): StoredMessage[] {
   // initialise an array of StoredMessage
@@ -64,6 +69,22 @@ class ApiService {
 
     if (!response.ok) {
       throw new Error(`Could not fetch conversation with id ${id}`);
+    }
+
+    return await response.json();
+  }
+
+  async sendMessage(id: string, message: CreateMessage): Promise<StoredConversation> {
+    const response = await fetch(`${this.baseUrl}/api/conversations/id/${id}/message`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(message),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Could not send message to conversation with id ${id}`);
     }
 
     return await response.json();

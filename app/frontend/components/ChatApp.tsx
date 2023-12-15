@@ -22,12 +22,24 @@ const ChatApp = () => {
     }, []);
 
     async function onSelect(id: string, title: string) {
-        const conversation = await fraude.getConversation(id);
-        setConversation(conversation);
+        const c = await fraude.getConversation(id);
+        setConversation(c);
     }
 
     async function sendMessage(message: string) {
-        console.log("sending message!");
+        if (!conversation) {
+            return;
+        }
+        const thread = getThread(conversation.messages);
+        const lastMessageId = thread.pop()?.id;
+
+        conversation = await fraude.sendMessage(conversation._id, {
+            content: message,
+            type: "human",
+            parent_message_id: lastMessageId,
+        });
+
+        setConversation(conversation);
     }
 
     return (
@@ -42,6 +54,6 @@ const ChatApp = () => {
             </div>
         </div>
     );
-};
+}
 
 export default ChatApp;

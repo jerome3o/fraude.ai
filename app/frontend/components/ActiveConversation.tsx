@@ -9,7 +9,7 @@ const ActiveConversation = ({
     sendMessage,
 }: {
     conversation: StoredConversation | undefined;
-    sendMessage: (message: string) => void;
+    sendMessage: (message: string) => Promise<void>;
 }) => {
     if (!conversation) {
         return <div className="active-conversation debug"></div>;

@@ -3,13 +3,12 @@ import '../app/globals.css'
 import { useState } from 'react'
 
 const MessageInput = (
-    { sendMessage }: { sendMessage: (message: string) => void }
+    { sendMessage }: { sendMessage: (message: string) => Promise<void> }
 ) => {
     const [message, setMessage] = useState('')
 
-    const handleSend = () => {
-        sendMessage(message)
-        console.log(message)
+    async function handleSend() {
+        await sendMessage(message)
         setMessage('')
     }
 

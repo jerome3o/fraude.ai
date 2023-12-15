@@ -50,7 +50,7 @@ async def get_conversation(
 async def add_message(
     convo_id: str,
     message: CreateMessage,
-) -> list[StoredMessage]:
+) -> StoredConversation:
     # TODO: reduce unnecessary db calls
 
     human_message = db_client.add_message(message, convo_id)
@@ -59,7 +59,8 @@ async def add_message(
     prompt = build_conversation_prompt(message_thread)
     response = ai_client.completion(prompt)
 
-    ai_message = db_client.add_message(
+    # TODO(j.swannack): find some way to link the response to the ai message
+    _ = db_client.add_message(
         CreateMessage(
             type=ParticipantType.AI,
             content=response,
@@ -68,7 +69,7 @@ async def add_message(
         convo_id,
     )
 
-    return db_client.get_conversation(convo_id).get_message_thread(ai_message.id)
+    return db_client.get_conversation(convo_id)
 
 
 if __name__ == "__main__":
