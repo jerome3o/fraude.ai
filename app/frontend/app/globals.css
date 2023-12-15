@@ -154,6 +154,14 @@ body {
   flex-grow: 1;
 }
 
+.active-convo {
+  background: var(--human-message-background);
+}
+
+.inactive-convo {
+  background: var(--ai-message-background);
+}
+
 .conversations-list-inner button {
   border-radius: var(--border-radius-1);
   border: 1px solid black;
@@ -162,6 +170,9 @@ body {
   width: 100%;
 }
 
+.inactive-convo:hover {
+  background: var(--background-end-hsl);
+}
 
 .ai-message-inner {
   background: var(--ai-message-background);

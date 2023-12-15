@@ -56,6 +56,7 @@ const ChatApp = () => {
         <div className="chat-app">
             <ConversationList
                 conversations={conversations}
+                conversationId={conversation?._id}
                 onSelect={onSelect}
                 newConversation={newConversation}
             />
