@@ -26,6 +26,10 @@ const ChatApp = () => {
         setConversation(conversation);
     }
 
+    async function sendMessage(message: string) {
+        console.log("sending message!");
+    }
+
     return (
         <div className="chat-app">
             <h1>Fraude</h1>
@@ -33,6 +37,7 @@ const ChatApp = () => {
                 <ConversationList conversations={conversations} onSelect={onSelect} />
                 <ActiveConversation
                     conversation={conversation}
+                    sendMessage={sendMessage}
                 />
             </div>
         </div>

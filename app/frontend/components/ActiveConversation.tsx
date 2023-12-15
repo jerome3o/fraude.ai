@@ -6,8 +6,10 @@ import { getThread, StoredConversation } from "../fraude/apiService";
 
 const ActiveConversation = ({
     conversation,
+    sendMessage,
 }: {
     conversation: StoredConversation | undefined;
+    sendMessage: (message: string) => void;
 }) => {
     if (!conversation) {
         return <div className="active-conversation debug"></div>;
@@ -21,7 +23,7 @@ const ActiveConversation = ({
                 {conversation.title}
             </h3>
             <MessageList messages={messages} />
-            <MessageInput />
+            <MessageInput sendMessage={sendMessage} />
         </div>
     );
 };

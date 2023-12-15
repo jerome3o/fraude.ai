@@ -1,11 +1,23 @@
 import '../app/globals.css'
 
-const MessageInput = () => {
+import { useState } from 'react'
+
+const MessageInput = (
+    { sendMessage }: { sendMessage: (message: string) => void }
+) => {
+    const [message, setMessage] = useState('')
+
+    const handleSend = () => {
+        sendMessage(message)
+        console.log(message)
+        setMessage('')
+    }
+
     return (
-        <div className='message-input debug'>
-            <input></input>
-            <button>Send</button>
-        </div>
+        <div className='message-input debug' >
+            <input type="text" value={message} onChange={(e) => setMessage(e.target.value)} />
+            <button onClick={handleSend}>Send</button>
+        </div >
     )
 }
 
