@@ -89,6 +89,22 @@ class ApiService {
 
     return await response.json();
   }
+
+  async createConversation(title: string): Promise<StoredConversation> {
+    const response = await fetch(`${this.baseUrl}/api/conversations/user/${this.user}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ title }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Could not create conversation with title ${title}`);
+    }
+
+    return await response.json();
+  }
 }
 
 export {

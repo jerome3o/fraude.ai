@@ -66,6 +66,7 @@ body {
   display: flex;
   flex-direction: column-reverse;
   overflow: auto;
+  width: 100%;
 }
 
 .message-list-box {

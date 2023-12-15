@@ -42,9 +42,19 @@ const ChatApp = () => {
         setConversation(conversation);
     }
 
+    async function newConversation() {
+        const c = await fraude.createConversation("New Conversation");
+        setConversations([...conversations, { id: c._id, title: c.title }]);
+        setConversation(c);
+    }
+
     return (
         <div className="chat-app">
-            <ConversationList conversations={conversations} onSelect={onSelect} />
+            <ConversationList
+                conversations={conversations}
+                onSelect={onSelect}
+                newConversation={newConversation}
+            />
             <ActiveConversation
                 conversation={conversation}
                 sendMessage={sendMessage}

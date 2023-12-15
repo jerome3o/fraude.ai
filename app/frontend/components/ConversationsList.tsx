@@ -5,9 +5,11 @@ import { ConversationHeaders } from "../fraude/apiService";
 const ConversationList = ({
     conversations,
     onSelect,
+    newConversation,
 }: {
     conversations: ConversationHeaders;
     onSelect: (id: string, title: string) => void;
+    newConversation: () => void;
 }) => {
     const innerOnSelect = (i: number) => {
         return () => {
@@ -26,6 +28,7 @@ const ConversationList = ({
                         </button>
                     );
                 })}
+                <button onClick={newConversation}>+</button>
             </div>
         </div>
     );
