@@ -16,21 +16,24 @@ Some assumptions/simplifications:
 
 * Single user
 * Multiple conversations with persistence
-* Streaming responses
 
 ### Prototype 2
 
-* Multiple users
-* Simple "functions" / integrations.
-* Markdown
+* Streaming responses
 * Edit messages
+* Markdown
 
 ### Prototype 3
 
 Best effort:
 
+* Simple "functions" / integrations.
 * Python interpreter
     * WASM/python in browser?
     * Python in server
 * Web browser
 * SDXL image generation?
+
+### Maybe in the future
+
+* Multiple users
