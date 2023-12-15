@@ -8,11 +8,29 @@
   --border-radius-1: 15px;
 }
 
+html {
+  height: 100%;
+  width: 100%;
+  margin: 0%;
+  padding: 0%;
+}
+
+
 body {
   color: rgb(var(--foreground-rgb));
   background-image: linear-gradient(to bottom, var(--background-grad));
-  height: 100vh;
-  width: 100vw;
+  height: 100%;
+  width: 100%;
+  margin: 0%;
+  padding: 0%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+main {
+  height: 95%;
+  width: 95%;
   margin: 0%;
   padding: 0%;
 }
@@ -26,39 +44,41 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: start;
+  width: 100%;
+  height: 100%;
 }
 
 .chat-app-inner {
   display: flex;
   flex-direction: row;
-  align-items: center;
-  justify-content: center;
-}
+  align-items: start;
+  justify-content: space-around;
 
-.active-conversation {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-end;
+  width: 100%;
   height: 100%;
-  padding: 0 10px;
-  border-color: black;
-  border-width: 2px;
-  border-radius: var(--border-radius-1);
 }
 
 .conversations-list {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  height: 100%;
-  padding: 0 10px;
+  align-items: left;
 
+  width: 50%;
+}
+
+.active-conversation {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 10px;
   border-color: black;
   border-width: 2px;
   border-radius: var(--border-radius-1);
+
+  height: 100%;
+  width: 100%;
 }
 
 .message-list {
@@ -66,17 +86,15 @@ body {
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-end;
-  height: 100%;
   padding: 0 10px;
-  border-color: black;
-  border-width: 2px;
-  border-radius: var(--border-radius-1);
+
+  height: 100%;
+  width: 80%;
 }
 
 .message-input {
-  border-color: black;
-  border-width: 2px;
-  border-radius: var(--border-radius-1);
+  padding: 0 10px;
+  width: 80%;
 }
 
 .message {

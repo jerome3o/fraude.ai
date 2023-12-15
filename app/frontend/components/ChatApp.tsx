@@ -7,7 +7,7 @@ import ConversationList from "./ConversationsList"
 const ChatApp = () => {
     return (
         <div className='chat-app debug'>
-            <h1>ChatApp</h1>
+            <h1>Fraude</h1>
             <div className='chat-app-inner debug'>
                 <ConversationList />
                 <ActiveConversation />
