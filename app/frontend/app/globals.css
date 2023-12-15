@@ -65,6 +65,7 @@ main {
   align-items: left;
 
   width: 50%;
+  height: 100%
 }
 
 .active-conversation {
@@ -100,6 +101,16 @@ main {
 .message {
   border-radius: var(--border-radius-1);
   padding: 2px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.message-inner {
+  border-radius: var(--border-radius-1);
+  padding: 2px;
 }
 
 /* style h1 elements in the message class */
@@ -110,10 +121,18 @@ main {
   padding-right: 5px;
 }
 
-.ai {
+.ai-message-inner {
   background: var(--ai-message-background);
 }
 
-.human {
+.human-message-inner {
   background: var(--human-message-background);
+}
+
+.ai-message {
+  align-items: flex-start;
+}
+
+.human-message {
+  align-items: flex-end;
 }
