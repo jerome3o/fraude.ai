@@ -6,16 +6,14 @@ import ConversationList from "./ConversationsList";
 
 import { useState, useEffect } from "react";
 
-import { ApiService, ConversationHeaders, getThread } from "../fraude/apiService";
+import { ApiService, ConversationHeaders, getThread, StoredMessage, StoredConversation } from "../fraude/apiService";
 
 const ChatApp = () => {
     const user = "jerome";
     const fraude = new ApiService(user);
 
     let [conversations, setConversations] = useState<ConversationHeaders>([]);
-    let [conversationId, setConversationId] = useState<string | undefined>(undefined);
-    let [conversationTitle, setConversationTitle] = useState<string | undefined>(undefined);
-    let [messages, setMessages] = useState<string[]>(["hey", "hi", "hello"]);
+    let [conversation, setConversation] = useState<StoredConversation | undefined>(undefined);
 
     useEffect(() => {
         fraude.getConversationHeaders().then((res) => {
@@ -24,13 +22,8 @@ const ChatApp = () => {
     }, []);
 
     async function onSelect(id: string, title: string) {
-        setConversationId(id);
-        setConversationTitle(title);
         const conversation = await fraude.getConversation(id);
-        const messages = getThread(conversation.messages);
-
-        console.log(conversation);
-        setMessages(messages.map((message) => { return message.content }));
+        setConversation(conversation);
     }
 
     return (
@@ -39,9 +32,7 @@ const ChatApp = () => {
             <div className="chat-app-inner">
                 <ConversationList conversations={conversations} onSelect={onSelect} />
                 <ActiveConversation
-                    conversationTitle={conversationTitle}
-                    conversationId={conversationId}
-                    messages={messages}
+                    conversation={conversation}
                 />
             </div>
         </div>

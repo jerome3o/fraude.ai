@@ -2,21 +2,23 @@ import "../app/globals.css";
 import MessageInput from "./MessageInput";
 import MessageList from "./MessageList";
 
-import { useState, useEffect } from "react";
+import { getThread, StoredConversation } from "../fraude/apiService";
 
 const ActiveConversation = ({
-    conversationTitle,
-    conversationId,
-    messages,
+    conversation,
 }: {
-    conversationTitle: string | undefined;
-    conversationId: string | undefined;
-    messages: string[];
+    conversation: StoredConversation | undefined;
 }) => {
+    if (!conversation) {
+        return <div className="active-conversation debug"></div>;
+    }
+
+    const messages = getThread(conversation.messages);
+
     return (
         <div className="active-conversation debug">
             <h3>
-                {conversationTitle}, {conversationId}
+                {conversation.title}
             </h3>
             <MessageList messages={messages} />
             <MessageInput />

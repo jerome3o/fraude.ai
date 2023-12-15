@@ -7,13 +7,14 @@ type ConversationHeaders = {
 
 interface StoredMessage {
   id: string;
+  type: string;
   content: string;
   responses: StoredMessage[];
   conversation_id: string;
 }
 
 interface StoredConversation {
-  id: string | undefined;
+  _id: string | undefined;
   title: string;
   user_id: string;
   created_at: string;
