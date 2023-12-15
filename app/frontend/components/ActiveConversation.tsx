@@ -7,9 +7,11 @@ import { getThread, StoredConversation } from "../fraude/apiService";
 const ActiveConversation = ({
     conversation,
     sendMessage,
+    latestHumanMessage,
 }: {
     conversation: StoredConversation | undefined;
     sendMessage: (message: string) => Promise<void>;
+    latestHumanMessage: string | undefined;
 }) => {
     if (!conversation) {
         return <div className="active-conversation"></div>;
@@ -22,7 +24,10 @@ const ActiveConversation = ({
             <h3>
                 {conversation.title}
             </h3>
-            <MessageList messages={messages} />
+            <MessageList
+                messages={messages}
+                latestHumanMessage={latestHumanMessage}
+            />
             <MessageInput sendMessage={sendMessage} />
         </div>
     );

@@ -6,7 +6,13 @@ import ConversationList from "./ConversationsList";
 
 import { useState, useEffect } from "react";
 
-import { ApiService, ConversationHeaders, getThread, StoredMessage, StoredConversation } from "../fraude/apiService";
+import {
+    ApiService,
+    ConversationHeaders,
+    getThread,
+    StoredMessage,
+    StoredConversation,
+} from "../fraude/apiService";
 
 const ChatApp = () => {
     const user = "jerome";
@@ -14,6 +20,7 @@ const ChatApp = () => {
 
     let [conversations, setConversations] = useState<ConversationHeaders>([]);
     let [conversation, setConversation] = useState<StoredConversation | undefined>(undefined);
+    let [latestHumanMessage, setLatestHumanMessage] = useState<string | undefined>(undefined);
 
     useEffect(() => {
         fraude.getConversationHeaders().then((res) => {
@@ -35,7 +42,10 @@ const ChatApp = () => {
             return;
         }
         const thread = getThread(conversation.messages);
-        const lastMessageId = thread.pop()?.id;
+        const lastMessage = thread.pop();
+        const lastMessageId = lastMessage?.id;
+
+        setLatestHumanMessage(message);
 
         conversation = await fraude.sendMessage(conversation._id, {
             content: message,
@@ -43,6 +53,7 @@ const ChatApp = () => {
             parent_message_id: lastMessageId,
         });
 
+        setLatestHumanMessage(undefined);
         setConversation(conversation);
     }
 
@@ -63,9 +74,10 @@ const ChatApp = () => {
             <ActiveConversation
                 conversation={conversation}
                 sendMessage={sendMessage}
+                latestHumanMessage={latestHumanMessage}
             />
         </div>
     );
-}
+};
 
 export default ChatApp;
