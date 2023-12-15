@@ -16,7 +16,7 @@ const ConversationList = ({
     };
 
     return (
-        <div className="conversations-list debug">
+        <div className="conversations-list">
             <h3>Conversations</h3>
             <div className="conversations-list-inner">
                 {conversations.map((info, index) => {

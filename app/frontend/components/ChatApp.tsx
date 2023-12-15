@@ -44,14 +44,11 @@ const ChatApp = () => {
 
     return (
         <div className="chat-app">
-            <h1>Fraude</h1>
-            <div className="chat-app-inner">
-                <ConversationList conversations={conversations} onSelect={onSelect} />
-                <ActiveConversation
-                    conversation={conversation}
-                    sendMessage={sendMessage}
-                />
-            </div>
+            <ConversationList conversations={conversations} onSelect={onSelect} />
+            <ActiveConversation
+                conversation={conversation}
+                sendMessage={sendMessage}
+            />
         </div>
     );
 }

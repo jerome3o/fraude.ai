@@ -13,7 +13,7 @@ const MessageInput = (
     }
 
     return (
-        <div className='message-input debug' >
+        <div className='message-input' >
             <input type="text" value={message} onChange={(e) => setMessage(e.target.value)} />
             <button onClick={handleSend}>Send</button>
         </div >

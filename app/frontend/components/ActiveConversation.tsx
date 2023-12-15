@@ -12,13 +12,13 @@ const ActiveConversation = ({
     sendMessage: (message: string) => Promise<void>;
 }) => {
     if (!conversation) {
-        return <div className="active-conversation debug"></div>;
+        return <div className="active-conversation"></div>;
     }
 
     const messages = getThread(conversation.messages);
 
     return (
-        <div className="active-conversation debug">
+        <div className="active-conversation">
             <h3>
                 {conversation.title}
             </h3>
