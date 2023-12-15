@@ -10,7 +10,7 @@ const ChatApp = () => {
             <h1>Fraude</h1>
             <div className='chat-app-inner debug'>
                 <ConversationList />
-                <ActiveConversation />
+                <ActiveConversation conversationTitle='Test conversation title' />
             </div>
         </div>
     )

@@ -2,10 +2,10 @@ import '../app/globals.css'
 import MessageInput from "./MessageInput"
 import MessageList from "./MessageList"
 
-const ActiveConversation = () => {
+const ActiveConversation = ({ conversationTitle }: { conversationTitle: string }) => {
     return (
         <div className='active-conversation debug'>
-            <h1>ActiveConversation</h1>
+            <h3>{conversationTitle}</h3>
             <MessageList />
             <MessageInput />
         </div>
