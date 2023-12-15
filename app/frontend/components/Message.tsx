@@ -1,7 +1,12 @@
-const Message = () => {
+import '../app/globals.css'
+
+const Message = ({ content, isAi }: { content: string, isAi: boolean }) => {
+
+    const style = isAi ? "message ai" : "message human"
+
     return (
-        <div>
-            <h1>Message</h1>
+        <div className={style}>
+            <p>{content}</p>
         </div>
     )
 }

@@ -1,12 +1,17 @@
+'use client';
+
+import '../app/globals.css'
 import ActiveConversation from "./ActiveConversation"
 import ConversationList from "./ConversationsList"
 
 const ChatApp = () => {
     return (
-        <div>
+        <div className='chat-app debug'>
             <h1>ChatApp</h1>
-            <ConversationList />
-            <ActiveConversation />
+            <div className='chat-app-inner debug'>
+                <ConversationList />
+                <ActiveConversation />
+            </div>
         </div>
     )
 }
