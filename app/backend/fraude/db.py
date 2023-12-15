@@ -5,6 +5,7 @@ from bson.objectid import ObjectId
 
 from fraude.models import (
     ConversationHeaders,
+    ConversationHeader,
     CreateConversation,
     CreateMessage,
     StoredConversation,
@@ -28,7 +29,7 @@ class DbClient:
     def get_conversation_headers(self, user_id: str) -> ConversationHeaders:
         # returns all conversation titles and ids for a given user
         return [
-            (str(conversation["_id"]), conversation["title"])
+            ConversationHeader(id=str(conversation["_id"]), title=conversation["title"])
             for conversation in self.db.conversations.find({"user_id": user_id})
         ]
 

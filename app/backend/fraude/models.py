@@ -22,7 +22,12 @@ def _find_message_chain(
     return None
 
 
-ConversationHeaders = list[tuple[str, str]]
+class ConversationHeader(BaseModel):
+    id: str
+    title: str
+
+
+ConversationHeaders = List[ConversationHeader]
 
 
 class ParticipantType(Enum):
