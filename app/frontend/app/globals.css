@@ -77,7 +77,6 @@ body {
 }
 
 .message-list {
-
   flex: 1;
   display: flex;
   flex-direction: column-reverse;
@@ -105,6 +104,18 @@ body {
   border: 1px solid black;
   margin: 2px;
   padding: 5px 10px;
+}
+
+.message-input button {
+  border-radius: var(--border-radius-1);
+  border: 1px solid var(--foreground-rgb);
+  margin: 2px;
+  padding: 5px 10px;
+  background: var(--ai-message-background);
+}
+
+.message-input button:hover {
+  background: var(--human-message-background);
 }
 
 .message {
@@ -164,7 +175,7 @@ body {
 
 .conversations-list-inner button {
   border-radius: var(--border-radius-1);
-  border: 1px solid black;
+  border: 1px solid var(--foreground-rgb);
   margin: 2px;
   padding: 5px 10px;
   width: 100%;
