@@ -57,7 +57,7 @@ async def add_message(
     conversation = db_client.get_conversation(convo_id)
     message_thread = conversation.get_message_thread(human_message.id)
     prompt = build_conversation_prompt(message_thread)
-    response = ai_client.completion(prompt)
+    response = await ai_client.completion(prompt)
 
     # TODO(j.swannack): find some way to link the response to the ai message
     _ = db_client.add_message(
