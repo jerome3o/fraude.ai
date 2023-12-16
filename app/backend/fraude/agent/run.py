@@ -14,19 +14,24 @@ async def run_agent(
     history: History,
     partial_response_function: PartialResponseFunction,
 ):
-    prompt = build_agent_prompt(actions, history)
-    response = await ai_client.completion(prompt)
+    if len(actions) > 1:
+        prompt = build_agent_prompt(actions, history)
+        response = await ai_client.completion(prompt)
 
-    _logger.info(f"Agent action choice: {response}")
-    # select action
-    action = next(
-        filter(lambda action: action.title == response, actions),
-        None,
-    )
+        _logger.info(f"Agent action choice: {response}")
+        # select action
+        action = next(
+            filter(lambda action: action.title == response, actions),
+            None,
+        )
 
-    if action is None:
-        # TODO(j.swannack): Handle this better - maybe just respond if in doubt?
-        raise Exception(f"Action {response} not found")
+        if action is None:
+            action = actions[0]
+            _logger.warning(f"Invalid action: {response}, choosing {action.title}")
+    elif len(actions) == 1:
+        action = actions[0]
+    else:
+        raise ValueError("No actions available")
 
     # run action
     response = await action.run(
