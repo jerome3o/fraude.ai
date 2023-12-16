@@ -8,6 +8,7 @@ from fraude.models import (
     CreateConversation,
     CreateMessage,
     ParticipantType,
+    RenameRequest,
     StoredConversation,
 )
 from fraude.prompting import build_conversation_prompt
@@ -69,6 +70,14 @@ async def add_message(
     )
 
     return db_client.get_conversation(convo_id)
+
+
+@app.patch("/api/conversations/id/{convo_id}/rename")
+async def rename_conversation(
+    convo_id: str,
+    rename: RenameRequest,
+) -> StoredConversation:
+    return db_client.rename_conversation(convo_id, rename.title)
 
 
 if __name__ == "__main__":

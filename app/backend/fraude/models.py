@@ -91,6 +91,10 @@ class StoredConversation(Conversation):
         return v
 
 
+class RenameRequest(BaseModel):
+    title: str
+
+
 def main():
     data = {
         "_id": ObjectId("6576834f5c8fc6ee876f2896"),

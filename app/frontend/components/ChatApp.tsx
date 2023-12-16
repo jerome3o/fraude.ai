@@ -63,6 +63,20 @@ const ChatApp = () => {
         setConversation(c);
     }
 
+    async function renameConversation(newName: string) {
+        console.log("renameConversation", newName);
+        if (!conversation) {
+            return;
+        }
+        const newConversation = await fraude.renameConversation(conversation._id, newName);
+        setConversation(newConversation);
+
+        // TODO: don't need to re-hit the server
+        fraude.getConversationHeaders().then((res) => {
+            setConversations(res);
+        });
+    }
+
     return (
         <div className="chat-app">
             <ConversationList
@@ -75,6 +89,7 @@ const ChatApp = () => {
                 conversation={conversation}
                 sendMessage={sendMessage}
                 latestHumanMessage={latestHumanMessage}
+                renameConversation={renameConversation}
             />
         </div>
     );

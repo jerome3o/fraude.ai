@@ -105,6 +105,22 @@ class ApiService {
 
     return await response.json();
   }
+
+  async renameConversation(id: string, title: string): Promise<StoredConversation> {
+    const response = await fetch(`${this.baseUrl}/api/conversations/id/${id}/rename`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ title }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Could not rename conversation with id ${id}`);
+    }
+
+    return await response.json();
+  }
 }
 
 export {

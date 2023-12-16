@@ -95,3 +95,11 @@ class DbClient:
         )
 
         return new_message
+
+    def rename_conversation(self, convo_id: str, rename: str) -> StoredConversation:
+        # updates the conversation
+        self.db.conversations.update_one(
+            {"_id": ObjectId(convo_id)},
+            {"$set": {"title": rename}},
+        )
+        return self.get_conversation(convo_id)
