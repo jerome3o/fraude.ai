@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import List, Optional
+from typing import List, Optional, Literal
 from enum import Enum
 from bson import ObjectId
 
@@ -20,6 +20,16 @@ def _find_message_chain(
                 return found_message
 
     return None
+
+
+# todo decouple naming from WS
+class WsMessage(BaseModel):
+    type: str
+    content: str
+
+
+class WsPartialResponseMessage(WsMessage):
+    type: Literal["partial_response"] = "partial_response"
 
 
 class ConversationHeader(BaseModel):
@@ -51,7 +61,6 @@ class StoredMessage(Message):
     # this will be created by db client
     id: str
     responses: List[StoredMessage]
-
     conversation_id: str
 
 

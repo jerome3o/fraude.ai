@@ -52,7 +52,7 @@ class ApiService {
   // default to ""
   constructor(user: string, baseUrl: string = "") {
     this.user = user;
-    this.baseUrl = baseUrl || window.location.origin;
+    this.baseUrl = baseUrl || (window && window.location.origin);
 
     // handle when http is in the URL.. ?
     this.wsUrl = this.baseUrl.replace("http", "ws");
@@ -110,7 +110,13 @@ class ApiService {
     let partialMessage = "";
     socket.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      partialMessage += data.latest_token
+
+      if (data.type !== "partial_response") {
+        console.log(`Received unknown ws message: ${data.type}, ${data.content}`)
+        return;
+      }
+
+      partialMessage += data.content
       onPartial(partialMessage);
     }
 

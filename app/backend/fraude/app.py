@@ -1,5 +1,3 @@
-import json
-
 from fastapi import FastAPI, WebSocket
 
 from fraude.ai import AnthropicClient, AiClient
@@ -12,8 +10,11 @@ from fraude.models import (
     ParticipantType,
     RenameRequest,
     StoredConversation,
+    WsMessage,
 )
-from fraude.prompting import build_conversation_prompt
+from fraude.agent.models import Action, History
+from fraude.agent.run import run_agent
+from fraude.agent.actions.respond import respond_action
 
 
 app = FastAPI()
@@ -21,6 +22,7 @@ app = FastAPI()
 # todo inject these
 db_client = DbClient(DB_URL, DB_NAME)
 ai_client: AiClient = AnthropicClient(API_KEY)
+actions: list[Action] = [respond_action]
 
 
 @app.get("/")
@@ -67,13 +69,15 @@ async def add_message_ws(
     conversation = db_client.get_conversation(convo_id)
     message_thread = conversation.get_message_thread(human_message.id)
 
-    prompt = build_conversation_prompt(message_thread)
+    async def partial_response_message(partial_response: WsMessage):
+        await websocket.send_text(partial_response.model_dump_json())
 
-    response = ""
-
-    async for token in ai_client.stream_completion(prompt):
-        response += token
-        await websocket.send_text(json.dumps({"latest_token": token}))
+    response = await run_agent(
+        ai_client,
+        actions,
+        History(message_thread=message_thread),
+        partial_response_message,
+    )
 
     await websocket.close()
 
