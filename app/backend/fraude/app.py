@@ -48,34 +48,7 @@ async def get_conversation(
     return db_client.get_conversation(convo_id)
 
 
-@app.post("/api/conversations/id/{convo_id}/message")
-async def add_message(
-    convo_id: str,
-    message: CreateMessage,
-) -> StoredConversation:
-    # TODO: reduce unnecessary db calls
-
-    human_message = db_client.add_message(message, convo_id)
-    conversation = db_client.get_conversation(convo_id)
-    message_thread = conversation.get_message_thread(human_message.id)
-    prompt = build_conversation_prompt(message_thread)
-
-    response = await ai_client.completion(prompt)
-
-    # TODO(j.swannack): find some way to link the response to the ai message
-    _ = db_client.add_message(
-        CreateMessage(
-            type=ParticipantType.AI,
-            content=response,
-            parent_message_id=human_message.id,
-        ),
-        convo_id,
-    )
-
-    return db_client.get_conversation(convo_id)
-
-
-@app.websocket("/api/conversations/id/{convo_id}/message/ws")
+@app.websocket("/api/conversations/id/{convo_id}/message")
 async def add_message_ws(
     *,
     websocket: WebSocket,

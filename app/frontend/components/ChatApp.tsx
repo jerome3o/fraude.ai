@@ -37,30 +37,6 @@ const ChatApp = () => {
         setConversation(c);
     }
 
-    async function sendMessage(message: string) {
-        if (!conversation) {
-            return;
-        }
-
-        if (message === "") {
-            return;
-        }
-        const thread = getThread(conversation.messages);
-        const lastMessage = thread.pop();
-        const lastMessageId = lastMessage?.id;
-
-        setLatestHumanMessage(message);
-
-        const newConversation = await fraude.sendMessage(conversation._id, {
-            content: message,
-            type: "human",
-            parent_message_id: lastMessageId,
-        });
-
-        setLatestHumanMessage(undefined);
-        setConversation(newConversation);
-    }
-
     async function sendMessageWs(message: string) {
         if (!conversation) {
             return;

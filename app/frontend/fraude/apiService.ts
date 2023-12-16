@@ -100,7 +100,7 @@ class ApiService {
     onPartial: (partialMessage: string) => void,
     onFinish: () => void,
   ) {
-    const url = `${this.wsUrl}/api/conversations/id/${id}/message/ws`
+    const url = `${this.wsUrl}/api/conversations/id/${id}/message`
     const socket = new WebSocket(url);
 
     socket.onopen = () => {
