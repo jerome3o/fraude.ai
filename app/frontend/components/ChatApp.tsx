@@ -41,6 +41,10 @@ const ChatApp = () => {
         if (!conversation) {
             return;
         }
+
+        if (message === "") {
+            return;
+        }
         const thread = getThread(conversation.messages);
         const lastMessage = thread.pop();
         const lastMessageId = lastMessage?.id;

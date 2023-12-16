@@ -15,7 +15,7 @@ const MessageInput = (
 
     return (
         <form onSubmit={handleSend} className='message-input'>
-            <input type="text" value={message} onChange={(e) => setMessage(e.target.value)} />
+            <input type="text" value={message} className="message-input-text" onChange={(e) => setMessage(e.target.value)} />
             <button type="submit">Send</button>
         </form>
     )

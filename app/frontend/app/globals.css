@@ -76,6 +76,24 @@ body {
   width: 100%;
 }
 
+.active-conversation-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: 10px;
+}
+
+.active-conversation-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: 10px;
+}
+
 .message-list {
   flex: 1;
   display: flex;
@@ -100,13 +118,16 @@ body {
 
 .message-input input {
   flex-grow: 1;
+}
+
+input {
   border-radius: var(--border-radius-1);
   border: 1px solid black;
   margin: 2px;
   padding: 5px 10px;
 }
 
-.message-input button {
+button {
   border-radius: var(--border-radius-1);
   border: 1px solid var(--foreground-rgb);
   margin: 2px;
@@ -114,7 +135,7 @@ body {
   background: var(--ai-message-background);
 }
 
-.message-input button:hover {
+button:hover {
   background: var(--human-message-background);
 }
 
@@ -218,8 +239,11 @@ body {
   height: 180px;
   top: 50%;
   margin-top: -100px;
-  background: #FFF;
   z-index: 20;
+}
+
+.conversation-popup-buttons {
+  gap: 10px;
 }
 
 #conversation-popup:after {
@@ -234,12 +258,22 @@ body {
 }
 
 #conversation-popup:before {
+  border-radius: var(--border-radius-1);
   position: absolute;
   content: "";
   top: 0;
   left: 0;
   bottom: 0;
   right: 0;
-  background: #FFF;
+  background: var(--human-message-background);
   z-index: -1;
+}
+
+.centered {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  width: 100%;
+  height: 100%;
 }

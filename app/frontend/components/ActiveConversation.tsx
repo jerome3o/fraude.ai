@@ -43,14 +43,25 @@ const ActiveConversation = ({
 
     return (
         <div className="active-conversation">
-            <h3>
-                {conversation.title}
-            </h3>
-            <button onClick={openPopup}>edit</button>
+            <div className="active-conversation-header">
+                <h3>
+                    {conversation.title}
+                </h3>
+                <button onClick={openPopup}>edit</button>
+            </div>
             <div className={popupClass} id="conversation-popup">
-                <input type="text" value={titleInput} onChange={(e) => setTitleInput(e.target.value)} />
-                <button onClick={submitPopup}>accept</button>
-                <button onClick={cancelPopup}>cancel</button>
+                <div className="centered">
+                    <input
+                        type="text"
+                        value={titleInput}
+                        onChange={(e) => setTitleInput(e.target.value)}
+                        className="message-input-text"
+                    />
+                    <div id="conversation-popup-buttons">
+                        <button onClick={cancelPopup}>cancel</button>
+                        <button onClick={submitPopup}>accept</button>
+                    </div>
+                </div>
             </div>
             <MessageList
                 messages={messages}
