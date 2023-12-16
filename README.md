@@ -20,8 +20,8 @@ Some assumptions/simplifications:
 ### Prototype 2
 
 * Streaming responses
-* Edit messages
-* Markdown
+* Edit messages ??
+* Markdown ??
 
 ### Prototype 3
 
