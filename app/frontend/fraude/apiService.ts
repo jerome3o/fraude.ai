@@ -46,12 +46,16 @@ function getThread(messages: StoredMessage[]): StoredMessage[] {
 
 class ApiService {
   private baseUrl: string;
+  private wsUrl: string;
   private user: string;
 
   // default to ""
   constructor(user: string, baseUrl: string = "") {
     this.user = user;
-    this.baseUrl = baseUrl;
+    this.baseUrl = baseUrl || window.location.origin;
+
+    // handle when http is in the URL.. ?
+    this.wsUrl = this.baseUrl.replace("http", "ws");
   }
 
   async getConversationHeaders(): Promise<ConversationHeaders> {
@@ -88,6 +92,31 @@ class ApiService {
     }
 
     return await response.json();
+  }
+
+  async sendMessageStream(
+    id: string,
+    message: CreateMessage,
+    onPartial: (partialMessage: string) => void,
+    onFinish: () => void,
+  ) {
+    const url = `${this.wsUrl}/api/conversations/id/${id}/message/ws`
+    const socket = new WebSocket(url);
+
+    socket.onopen = () => {
+      socket.send(JSON.stringify(message));
+    }
+
+    let partialMessage = "";
+    socket.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      partialMessage += data.latest_token
+      onPartial(partialMessage);
+    }
+
+    socket.onclose = () => {
+      onFinish();
+    }
   }
 
   async createConversation(title: string): Promise<StoredConversation> {

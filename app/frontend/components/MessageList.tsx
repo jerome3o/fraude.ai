@@ -6,9 +6,11 @@ import { StoredMessage } from "../fraude/apiService";
 const MessageList = ({
     messages,
     latestHumanMessage,
+    partialMessage,
 }: {
     messages: StoredMessage[];
     latestHumanMessage: string | undefined;
+    partialMessage: string | undefined;
 }) => {
     return (
         <div className="message-list">
@@ -34,7 +36,7 @@ const MessageList = ({
                     latestHumanMessage &&
                     <Message
                         key={messages.length + 101}
-                        content="..."
+                        content={partialMessage || "..."}
                         isAi={true}
                     />
                 }

@@ -10,7 +10,6 @@ import {
     ApiService,
     ConversationHeaders,
     getThread,
-    StoredMessage,
     StoredConversation,
 } from "../fraude/apiService";
 
@@ -18,9 +17,10 @@ const ChatApp = () => {
     const user = "jerome";
     const fraude = new ApiService(user);
 
-    let [conversations, setConversations] = useState<ConversationHeaders>([]);
-    let [conversation, setConversation] = useState<StoredConversation | undefined>(undefined);
-    let [latestHumanMessage, setLatestHumanMessage] = useState<string | undefined>(undefined);
+    const [conversations, setConversations] = useState<ConversationHeaders>([]);
+    const [conversation, setConversation] = useState<StoredConversation | undefined>(undefined);
+    const [latestHumanMessage, setLatestHumanMessage] = useState<string | undefined>(undefined);
+    const [partialMessage, setPartialMessage] = useState<string | undefined>(undefined);
 
     useEffect(() => {
         fraude.getConversationHeaders().then((res) => {
@@ -51,14 +51,46 @@ const ChatApp = () => {
 
         setLatestHumanMessage(message);
 
-        conversation = await fraude.sendMessage(conversation._id, {
+        const newConversation = await fraude.sendMessage(conversation._id, {
             content: message,
             type: "human",
             parent_message_id: lastMessageId,
         });
 
         setLatestHumanMessage(undefined);
-        setConversation(conversation);
+        setConversation(newConversation);
+    }
+
+    async function sendMessageWs(message: string) {
+        if (!conversation) {
+            return;
+        }
+
+        if (message === "") {
+            return;
+        }
+        setPartialMessage(undefined);
+
+        const thread = getThread(conversation.messages);
+        const lastMessage = thread.pop();
+        const lastMessageId = lastMessage?.id;
+
+        setLatestHumanMessage(message);
+
+        fraude.sendMessageStream(
+            conversation._id,
+            {
+                content: message,
+                type: "human",
+                parent_message_id: lastMessageId,
+            },
+            setPartialMessage,
+            async () => {
+                const newConvo = await fraude.getConversation(conversation._id)
+                setLatestHumanMessage(undefined);
+                setConversation(newConvo);
+            }
+        )
     }
 
     async function newConversation() {
@@ -68,7 +100,6 @@ const ChatApp = () => {
     }
 
     async function renameConversation(newName: string) {
-        console.log("renameConversation", newName);
         if (!conversation) {
             return;
         }
@@ -91,8 +122,9 @@ const ChatApp = () => {
             />
             <ActiveConversation
                 conversation={conversation}
-                sendMessage={sendMessage}
+                sendMessage={sendMessageWs}
                 latestHumanMessage={latestHumanMessage}
+                partialMessage={partialMessage}
                 renameConversation={renameConversation}
             />
         </div>

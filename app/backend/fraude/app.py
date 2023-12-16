@@ -1,4 +1,6 @@
-from fastapi import FastAPI
+import json
+
+from fastapi import FastAPI, WebSocket
 
 from fraude.ai import AnthropicClient, AiClient
 from fraude.db import DbClient
@@ -57,7 +59,50 @@ async def add_message(
     conversation = db_client.get_conversation(convo_id)
     message_thread = conversation.get_message_thread(human_message.id)
     prompt = build_conversation_prompt(message_thread)
+
     response = await ai_client.completion(prompt)
+
+    # TODO(j.swannack): find some way to link the response to the ai message
+    _ = db_client.add_message(
+        CreateMessage(
+            type=ParticipantType.AI,
+            content=response,
+            parent_message_id=human_message.id,
+        ),
+        convo_id,
+    )
+
+    return db_client.get_conversation(convo_id)
+
+
+@app.websocket("/api/conversations/id/{convo_id}/message/ws")
+async def add_message_ws(
+    *,
+    websocket: WebSocket,
+    convo_id: str,
+) -> StoredConversation:
+    # TODO: reduce unnecessary db calls
+
+    await websocket.accept()
+
+    # get the first message, which should just be the create message request
+    raw_message = await websocket.receive_text()
+    message = CreateMessage.model_validate_json(raw_message)
+
+    # TODO: DRY
+    human_message = db_client.add_message(message, convo_id)
+    conversation = db_client.get_conversation(convo_id)
+    message_thread = conversation.get_message_thread(human_message.id)
+
+    prompt = build_conversation_prompt(message_thread)
+
+    response = ""
+
+    async for token in ai_client.stream_completion(prompt):
+        response += token
+        await websocket.send_text(json.dumps({"latest_token": token}))
+
+    await websocket.close()
 
     # TODO(j.swannack): find some way to link the response to the ai message
     _ = db_client.add_message(

@@ -9,11 +9,13 @@ const ActiveConversation = ({
     conversation,
     sendMessage,
     latestHumanMessage,
+    partialMessage,
     renameConversation,
 }: {
     conversation: StoredConversation | undefined;
     sendMessage: (message: string) => Promise<void>;
     latestHumanMessage: string | undefined;
+    partialMessage: string | undefined;
     renameConversation: (title: string) => Promise<void>;
 }) => {
     if (!conversation) {
@@ -66,6 +68,7 @@ const ActiveConversation = ({
             <MessageList
                 messages={messages}
                 latestHumanMessage={latestHumanMessage}
+                partialMessage={partialMessage}
             />
             <MessageInput sendMessage={sendMessage} />
         </div >
