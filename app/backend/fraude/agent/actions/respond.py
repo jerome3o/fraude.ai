@@ -6,7 +6,8 @@ from anthropic import AI_PROMPT
 
 from fraude.models import StoredMessage, WsPartialResponseMessage
 from fraude.agent.prompting import build_thread_prompt
-from fraude.agent.models import Action, History, PartialResponseFunction
+from fraude.agent.actions.helpers import stream_response_back
+from fraude.models import Action, History, OneWayMessage, TwoWayMessage
 from fraude.ai import AiClient
 
 _system_prompt = """\
@@ -30,18 +31,16 @@ def build_conversation_prompt(message_thread: List[StoredMessage]) -> str:
 async def run_respond_action(
     history: History,
     ai_client: AiClient,
-    partial_response_function: PartialResponseFunction,
+    one_way_message: OneWayMessage,
+    two_way_message: TwoWayMessage,
 ) -> str:
     prompt = build_conversation_prompt(history.message_thread)
 
-    response = ""
-
-    async for token in ai_client.stream_completion(prompt):
-        response += token
-        # TODO: don't really need to await the response here?
-        await partial_response_function(WsPartialResponseMessage(content=token))
-
-    return response
+    return await stream_response_back(
+        prompt=prompt,
+        ai_client=ai_client,
+        callback=one_way_message,
+    )
 
 
 respond_action = Action(

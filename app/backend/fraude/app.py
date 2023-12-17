@@ -12,7 +12,7 @@ from fraude.models import (
     StoredConversation,
     WsMessage,
 )
-from fraude.agent.models import Action, History
+from fraude.models import Action, History
 from fraude.agent.run import run_agent
 from fraude.agent.actions.respond import respond_action
 
@@ -69,14 +69,23 @@ async def add_message_ws(
     conversation = db_client.get_conversation(convo_id)
     message_thread = conversation.get_message_thread(human_message.id)
 
-    async def partial_response_message(partial_response: WsMessage):
+    async def one_way_function(partial_response: WsMessage):
         await websocket.send_text(partial_response.model_dump_json())
 
+    async def two_way_function(message: WsMessage) -> str:
+        await websocket.send_text(message.model_dump_json())
+
+        # TODO: filtering and validation on this message?
+        #   this will need a lot more work if we use a persistent ws
+        return await websocket.receive_text()
+
+    # TODO(j.swannack): make actions selectable at runtime
     response = await run_agent(
         ai_client,
         actions,
         History(message_thread=message_thread),
-        partial_response_message,
+        one_way_function,
+        two_way_function,
     )
 
     await websocket.close()

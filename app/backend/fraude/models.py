@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import List, Optional, Literal
+from abc import ABC, abstractmethod
+from typing import List, Optional, Literal, Callable, Awaitable, AsyncGenerator
 from enum import Enum
 from bson import ObjectId
 
@@ -22,6 +23,24 @@ def _find_message_chain(
     return None
 
 
+class AiClient(ABC):
+    @abstractmethod
+    async def completion(
+        self,
+        prompt: str,
+        stop: list[str] = None,
+    ) -> str:
+        pass
+
+    @abstractmethod
+    async def stream_completion(
+        self,
+        prompt: str,
+        stop: list[str] = None,
+    ) -> AsyncGenerator[str, None]:
+        pass
+
+
 # todo decouple naming from WS
 class WsMessage(BaseModel):
     type: str
@@ -30,6 +49,19 @@ class WsMessage(BaseModel):
 
 class WsPartialResponseMessage(WsMessage):
     type: Literal["partial_response"] = "partial_response"
+
+
+class WsExecuteCodeMessage(WsMessage):
+    type: Literal["execute_code"] = "execute_code"
+
+
+class WsExecuteCodeResponse(BaseModel):
+    type: Literal["execute_code_response"] = "execute_code_response"
+
+    # TODO(j.swannack): make sure this is a reasonable length..
+    stdout: str
+    files: List[str]
+    exit_code: int
 
 
 class ConversationHeader(BaseModel):
@@ -102,6 +134,30 @@ class StoredConversation(Conversation):
 
 class RenameRequest(BaseModel):
     title: str
+
+
+OneWayMessage = Callable[[WsMessage], Awaitable[None]]
+
+# TODO(j.swannack): make response type object
+TwoWayMessage = Callable[[WsMessage], Awaitable[str]]
+
+
+class History(BaseModel):
+    message_thread: list[StoredMessage]
+
+
+class Action(BaseModel):
+    title: str
+    description: str
+    run: Callable[
+        [
+            History,
+            AiClient,
+            OneWayMessage,
+            TwoWayMessage,
+        ],
+        Awaitable[str],
+    ]
 
 
 def main():

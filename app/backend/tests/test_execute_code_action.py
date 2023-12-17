@@ -1,10 +1,10 @@
 import logging
 from fraude.ai import AnthropicClient
-from fraude.agent.actions import DEFAULT_ACTIONS
-from fraude.agent.models import History
+from fraude.agent.actions import respond_action, execute_code_action
+from fraude.models import History
 from fraude.agent.run import run_agent
 from fraude.constants import API_KEY
-from fraude.models import StoredMessage
+from fraude.models import StoredMessage, WsExecuteCodeResponse, WsMessage
 
 
 _logger = logging.getLogger(__name__)
@@ -14,12 +14,12 @@ async def main():
     # todo mock this
     ai_client = AnthropicClient(API_KEY)
 
-    actions = DEFAULT_ACTIONS
+    actions = [execute_code_action, respond_action]
     history = History(
         message_thread=[
             StoredMessage(
                 type="human",
-                content="Hi there!",
+                content="What is the 50th fibonacci number?",
                 id="1",
                 responses=[],
                 conversation_id="1",
@@ -27,14 +27,23 @@ async def main():
         ]
     )
 
-    async def partial_response_function(message: str):
+    async def one_way_function(message: WsMessage):
+        print(message.content, end="", flush=True)
+
+    async def two_way_function(message: WsMessage):
         _logger.info(message)
+        return WsExecuteCodeResponse(
+            stdout="Error, failed to run the python interpreter",
+            files=[],
+            exit_code=1,
+        ).model_dump_json()
 
     await run_agent(
         ai_client=ai_client,
         actions=actions,
         history=history,
-        partial_response_function=partial_response_function,
+        one_way_function=one_way_function,
+        two_way_function=two_way_function,
     )
 
 

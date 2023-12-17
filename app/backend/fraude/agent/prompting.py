@@ -1,7 +1,7 @@
 from anthropic import HUMAN_PROMPT, AI_PROMPT
 
 from fraude.models import StoredMessage, ParticipantType
-from fraude.agent.models import Action, History
+from fraude.models import Action, History
 
 _PROMPT_TEMPLATE = f"""\
 You are a helpful AI agent called Fraude, who is in dialogue with a human, as an AI agent you are \
@@ -16,7 +16,8 @@ Following is the conversation so far:
 ===={{context}}
 
 ===={HUMAN_PROMPT} What action would you like to perform? Please choose from {{action_list}}. \
-Only respond with the name of the action, Do not write anything more than that.{AI_PROMPT}
+Only respond with the name of the action, Do not write anything more than that, only one of the \
+action keys and nothing more. I will give you further instruction once you have decided.{AI_PROMPT}
 """
 
 

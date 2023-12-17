@@ -2,7 +2,7 @@
 import logging
 
 from fraude.ai import AiClient
-from fraude.agent.models import Action, History, PartialResponseFunction
+from fraude.models import Action, History, OneWayMessage, TwoWayMessage
 from fraude.agent.prompting import build_agent_prompt
 
 _logger = logging.getLogger(__name__)
@@ -12,7 +12,8 @@ async def run_agent(
     ai_client: AiClient,
     actions: list[Action],
     history: History,
-    partial_response_function: PartialResponseFunction,
+    one_way_function: OneWayMessage,
+    two_way_function: TwoWayMessage,
 ):
     if len(actions) > 1:
         prompt = build_agent_prompt(actions, history)
@@ -37,7 +38,8 @@ async def run_agent(
     response = await action.run(
         history,
         ai_client,
-        partial_response_function,
+        one_way_function,
+        two_way_function,
     )
 
     # TODO: only return if it was a response
