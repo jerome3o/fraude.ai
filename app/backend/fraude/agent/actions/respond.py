@@ -2,9 +2,10 @@
 
 from typing import List
 
-from anthropic import AI_PROMPT, HUMAN_PROMPT
+from anthropic import AI_PROMPT
 
-from fraude.models import StoredMessage, ParticipantType, WsPartialResponseMessage
+from fraude.models import StoredMessage, WsPartialResponseMessage
+from fraude.agent.prompting import build_thread_prompt
 from fraude.agent.models import Action, History, PartialResponseFunction
 from fraude.ai import AiClient
 
@@ -21,12 +22,7 @@ mistake they will often apologise profusely and curse to themselves.
 
 def build_conversation_prompt(message_thread: List[StoredMessage]) -> str:
     s = _system_prompt
-    for message in message_thread:
-        message_prompt = (
-            AI_PROMPT if message.type == ParticipantType.AI else HUMAN_PROMPT
-        )
-        s += f"{message_prompt} {message.content}"
-
+    s += build_thread_prompt(message_thread)
     s += f"{AI_PROMPT}"
     return s
 
