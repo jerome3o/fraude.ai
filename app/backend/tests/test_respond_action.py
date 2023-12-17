@@ -38,8 +38,8 @@ async def main():
         ai_client=ai_client,
         actions=actions,
         history=history,
-        one_way_function=one_way_function,
-        two_way_function=two_way_function,
+        one_way_message=one_way_function,
+        two_way_message=two_way_function,
     )
 
 

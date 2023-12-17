@@ -12,8 +12,8 @@ async def run_agent(
     ai_client: AiClient,
     actions: list[Action],
     history: History,
-    one_way_function: OneWayMessage,
-    two_way_function: TwoWayMessage,
+    one_way_message: OneWayMessage,
+    two_way_message: TwoWayMessage,
 ):
     if len(actions) > 1:
         prompt = build_agent_prompt(actions, history)
@@ -38,8 +38,8 @@ async def run_agent(
     response = await action.run(
         history,
         ai_client,
-        one_way_function,
-        two_way_function,
+        one_way_message,
+        two_way_message,
     )
 
     # TODO: only return if it was a response

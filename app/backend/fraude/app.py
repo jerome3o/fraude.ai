@@ -14,7 +14,7 @@ from fraude.models import (
 )
 from fraude.models import Action, History
 from fraude.agent.run import run_agent
-from fraude.agent.actions.respond import respond_action
+from fraude.agent.actions import respond_action, execute_code_action
 
 
 app = FastAPI()
@@ -22,7 +22,7 @@ app = FastAPI()
 # todo inject these
 db_client = DbClient(DB_URL, DB_NAME)
 ai_client: AiClient = AnthropicClient(API_KEY)
-actions: list[Action] = [respond_action]
+actions: list[Action] = [respond_action, execute_code_action]
 
 
 @app.get("/")

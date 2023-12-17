@@ -17,7 +17,7 @@ Following is the conversation so far:
 
 ===={HUMAN_PROMPT} What action would you like to perform? Please choose from {{action_list}}. \
 Only respond with the name of the action, Do not write anything more than that, only one of the \
-action keys and nothing more. I will give you further instruction once you have decided.{AI_PROMPT}
+action keys and nothing more. I will give you further instruction once you have decided.{AI_PROMPT} \
 """
 
 

@@ -111,13 +111,22 @@ class ApiService {
     socket.onmessage = (event) => {
       const data = JSON.parse(event.data);
 
-      if (data.type !== "partial_response") {
-        console.log(`Received unknown ws message: ${data.type}, ${data.content}`)
-        return;
+      if (data.type === "partial_response") {
+        partialMessage += data.content
+        onPartial(partialMessage);
       }
 
-      partialMessage += data.content
-      onPartial(partialMessage);
+      if (data.type === "execute_code") {
+        socket.send(JSON.stringify({
+          type: "execute_code_response",
+          stdout: "Error, failed to run the python interpreter",
+          files: [],
+          exit_code: 1
+        }));
+      }
+
+      console.error(`Not implemented: ${data.type}`);
+      console.log(data);
     }
 
     socket.onclose = () => {

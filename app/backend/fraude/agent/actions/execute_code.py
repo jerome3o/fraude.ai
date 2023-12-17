@@ -98,21 +98,24 @@ async def run_execute_code_action(
     async def _update_user(content: str):
         await one_way_message(WsPartialResponseMessage(content=content))
 
-    await _update_user("Generating python code ...\n\n")
+    await _update_user("Generating python code ...\n\n```python\n")
 
     prompt = _build_generation_prompt(history)
     # ask AI for code
-    response = await ai_client.completion(prompt)
+    response = await stream_response_back(
+        prompt=prompt,
+        ai_client=ai_client,
+        callback=one_way_message,
+        stop=["```", "``"],
+    )
+
+    await _update_user("```\n\n")
 
     # TODO(j.swannack): error handling
     code_text = response.split("```")[0]
     # TODO(j.swannack): AST check?
 
-    await _update_user(
-        "Code has been generated:"
-        f"\n\n```python\n{code_text}\n```\n\n"
-        "Running code now ...\n\n"
-    )
+    await _update_user("Running code now ...\n\n")
 
     # send code to browser and await result
     raw_output = await two_way_message(
