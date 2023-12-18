@@ -146,6 +146,8 @@ class History(BaseModel):
     message_thread: list[StoredMessage]
 
 
+# TODO: OneWayMessage using WsPartialResponseMessage is how the response is created
+#   This should be renamed/tidied up
 class Action(BaseModel):
     title: str
     description: str
@@ -156,7 +158,7 @@ class Action(BaseModel):
             OneWayMessage,
             TwoWayMessage,
         ],
-        Awaitable[str],
+        Awaitable[None],
     ]
 
 

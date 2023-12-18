@@ -2,7 +2,7 @@
 import logging
 
 from fraude.ai import AiClient
-from fraude.models import Action, History, OneWayMessage, TwoWayMessage
+from fraude.models import Action, History, OneWayMessage, TwoWayMessage, WsMessage
 from fraude.agent.prompting import build_agent_prompt
 
 _logger = logging.getLogger(__name__)
@@ -15,30 +15,41 @@ async def run_agent(
     one_way_message: OneWayMessage,
     two_way_message: TwoWayMessage,
 ):
+    response = ""
+
+    async def _one_way_message(message: WsMessage):
+        nonlocal response
+        if message.type == "partial_response":
+            response += message.content
+
+        await one_way_message(message)
+
     if len(actions) > 1:
         prompt = build_agent_prompt(actions, history)
-        response = await ai_client.completion(prompt)
+        action_response = await ai_client.completion(prompt)
 
-        _logger.info(f"Agent action choice: {response}")
+        _logger.info(f"Agent action choice: {action_response}")
         # select action
         action = next(
-            filter(lambda action: action.title == response, actions),
+            filter(lambda action: action.title == action_response, actions),
             None,
         )
 
         if action is None:
             action = actions[0]
-            _logger.warning(f"Invalid action: {response}, choosing {action.title}")
+            _logger.warning(
+                f"Invalid action: {action_response}, choosing {action.title}"
+            )
     elif len(actions) == 1:
         action = actions[0]
     else:
         raise ValueError("No actions available")
 
     # run action
-    response = await action.run(
+    await action.run(
         history,
         ai_client,
-        one_way_message,
+        _one_way_message,
         two_way_message,
     )
 

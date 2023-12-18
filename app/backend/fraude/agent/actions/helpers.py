@@ -10,7 +10,12 @@ async def stream_response_back(
 ) -> str:
     response = ""
 
+    first = True
     async for token in ai_client.stream_completion(prompt, **kwargs):
+        if first:
+            token = token.lstrip(" ")
+            first = False
+
         response += token
         # TODO: don't really need to await the response here?
         await callback(WsPartialResponseMessage(content=token))
