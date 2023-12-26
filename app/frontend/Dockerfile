@@ -23,7 +23,7 @@ COPY . .
 ENV NEXT_TELEMETRY_DISABLED 1
 
 # TODO: remove this when typescript errors are allowed/fixed
-RUN npm run build || true
+RUN npm run build
 
 # Production image, copy all the files and run next
 FROM base AS runner

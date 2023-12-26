@@ -1,5 +1,6 @@
 "use client";
 
+// TODO: encapsulate pyodide in something like "usePyodide"
 function prepPythonCode(python: string) {
   return `
 globals().clear()
@@ -77,7 +78,7 @@ const runScript = async (code: string) => {
 
   try {
     return await pyodide.runPythonAsync(prepPythonCode(code));
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
     return error.message;
   }

@@ -14,6 +14,7 @@ import {
 } from "../fraude/apiService";
 
 const ChatApp = () => {
+  // TODO: actually implement user auth
   const user = "jerome";
   const fraude = new ApiService(user);
 
