@@ -1,5 +1,3 @@
-"use client";
-
 // TODO: encapsulate pyodide in something like "usePyodide"
 function prepPythonCode(python: string) {
   return `
@@ -95,7 +93,11 @@ class ApiService {
 
     // learn where/when code is executed in next/react. This gives errors on
     // compile time
-    this.baseUrl = baseUrl || (window && window.location.origin);
+    if (typeof window !== "undefined") {
+      this.baseUrl = baseUrl || (window && window.location.origin);
+    } else {
+      this.baseUrl = baseUrl;
+    }
 
     // handle when http is in the URL.. ?
     this.wsUrl = this.baseUrl.replace("http", "ws");
