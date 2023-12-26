@@ -32,7 +32,7 @@ const ChatApp = () => {
     fraude.getConversationHeaders().then((res) => {
       setConversations(res);
     });
-  }, [fraude]);
+  }, []);
 
   async function onSelect(id: string, title: string) {
     if (conversation?._id === id) {
