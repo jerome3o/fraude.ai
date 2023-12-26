@@ -1,3 +1,5 @@
+"use client";
+
 function prepPythonCode(python: string) {
   return `
 globals().clear()
@@ -16,11 +18,10 @@ output
 `;
 }
 
-
 // in python it's list[tuple[str, str]]
 type ConversationHeaders = {
-  title: string,
-  id: string
+  title: string;
+  id: string;
 }[];
 
 interface StoredMessage {
@@ -65,9 +66,9 @@ let pyodide: any;
 
 const runScript = async (code: string) => {
   if (!pyodide) {
-    console.log("loading pyodide")
+    console.log("loading pyodide");
     pyodide = await window.loadPyodide({
-      indexURL: "https://cdn.jsdelivr.net/pyodide/v0.18.1/full/"
+      indexURL: "https://cdn.jsdelivr.net/pyodide/v0.18.1/full/",
     });
     console.log("loading pyodide complete");
   }
@@ -80,8 +81,7 @@ const runScript = async (code: string) => {
     console.error(error);
     return error.message;
   }
-}
-
+};
 
 class ApiService {
   private baseUrl: string;
@@ -101,7 +101,9 @@ class ApiService {
   }
 
   async getConversationHeaders(): Promise<ConversationHeaders> {
-    const response = await fetch(`${this.baseUrl}/api/conversations/user/${this.user}`);
+    const response = await fetch(
+      `${this.baseUrl}/api/conversations/user/${this.user}`
+    );
 
     if (!response.ok) {
       throw new Error(`Could not fetch user with id ${this.user}`);
@@ -120,14 +122,20 @@ class ApiService {
     return await response.json();
   }
 
-  async sendMessage(id: string, message: CreateMessage): Promise<StoredConversation> {
-    const response = await fetch(`${this.baseUrl}/api/conversations/id/${id}/message`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(message),
-    });
+  async sendMessage(
+    id: string,
+    message: CreateMessage
+  ): Promise<StoredConversation> {
+    const response = await fetch(
+      `${this.baseUrl}/api/conversations/id/${id}/message`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(message),
+      }
+    );
 
     if (!response.ok) {
       throw new Error(`Could not send message to conversation with id ${id}`);
@@ -140,21 +148,21 @@ class ApiService {
     id: string,
     message: CreateMessage,
     onPartial: (partialMessage: string) => void,
-    onFinish: () => void,
+    onFinish: () => void
   ) {
-    const url = `${this.wsUrl}/api/conversations/id/${id}/message`
+    const url = `${this.wsUrl}/api/conversations/id/${id}/message`;
     const socket = new WebSocket(url);
 
     socket.onopen = () => {
       socket.send(JSON.stringify(message));
-    }
+    };
 
     let partialMessage = "";
     socket.onmessage = (event) => {
       const data = JSON.parse(event.data);
 
       if (data.type === "partial_response") {
-        partialMessage += data.content
+        partialMessage += data.content;
         onPartial(partialMessage);
         return;
       }
@@ -168,33 +176,38 @@ class ApiService {
         // }));
         runScript(data.content).then((result) => {
           console.log(result);
-          socket.send(JSON.stringify({
-            type: "execute_code_response",
-            stdout: result,
-            files: [],
-            exit_code: 0
-          }));
-        })
+          socket.send(
+            JSON.stringify({
+              type: "execute_code_response",
+              stdout: result,
+              files: [],
+              exit_code: 0,
+            })
+          );
+        });
         return;
       }
 
       console.error(`Not implemented: ${data.type}`);
       console.log(data);
-    }
+    };
 
     socket.onclose = () => {
       onFinish();
-    }
+    };
   }
 
   async createConversation(title: string): Promise<StoredConversation> {
-    const response = await fetch(`${this.baseUrl}/api/conversations/user/${this.user}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ title }),
-    });
+    const response = await fetch(
+      `${this.baseUrl}/api/conversations/user/${this.user}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ title }),
+      }
+    );
 
     if (!response.ok) {
       throw new Error(`Could not create conversation with title ${title}`);
@@ -203,14 +216,20 @@ class ApiService {
     return await response.json();
   }
 
-  async renameConversation(id: string, title: string): Promise<StoredConversation> {
-    const response = await fetch(`${this.baseUrl}/api/conversations/id/${id}/rename`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ title }),
-    });
+  async renameConversation(
+    id: string,
+    title: string
+  ): Promise<StoredConversation> {
+    const response = await fetch(
+      `${this.baseUrl}/api/conversations/id/${id}/rename`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ title }),
+      }
+    );
 
     if (!response.ok) {
       throw new Error(`Could not rename conversation with id ${id}`);
