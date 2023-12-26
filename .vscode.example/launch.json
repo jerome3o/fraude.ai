@@ -12,7 +12,7 @@
             "env": {
                 "PYTHONPATH": "${workspaceFolder}/app/backend"
             },
-            "envFile": "${workspaceFolder}/app/backend.env",
+            "envFile": "${workspaceFolder}/app/backend/.env",
             "console": "integratedTerminal",
             "justMyCode": true
         }

@@ -7,7 +7,7 @@ services:
       context: ./ingress/
       dockerfile: Dockerfile
     ports:
-     - '3001:80'
+     - '${PORT:-8000}:80'
     depends_on:
      - frontend
      - backend
@@ -21,8 +21,10 @@ services:
     build:
       context: ./backend/
       dockerfile: Dockerfile
+    environment:
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - MONGODB_URL=mongodb://mongo:27017
+      - MONGODB_NAME=fraude
 
   mongo:
     image: mongo
-    ports:
-      - "27017:27017"
