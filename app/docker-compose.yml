@@ -11,6 +11,8 @@ services:
     depends_on:
      - frontend
      - backend
+    volumes:
+      - ./.htpasswd:/etc/nginx/.htpasswd
 
   frontend:
     build:
